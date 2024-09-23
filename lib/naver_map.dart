@@ -28,7 +28,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: 400,
         width: double.infinity,
         // 등록된 IFrameElement Widget들 중
         //'naver-map'라는 이름을 가진 개체를 Widget으로 임베딩

@@ -9,6 +9,9 @@ import 'package:mondian/calendar_widget.dart';
 import 'package:mondian/naver_map.dart';
 import 'dart:html' as html;
 
+import 'package:mondian/widget/tabbed_card.dart';
+import 'package:mondian/widget/tabbed_card_model.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -102,6 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             const CongratulationGift(),
             const MapWidget(),
+            const SizedBox(height: 30,),
+            NoticeWidget(),
           ],
         ),
       ),
@@ -193,6 +198,13 @@ class MapWidget extends StatelessWidget {
         Text("더링크호텔 서울 3F 플라자홀"),
         Text("서울 구로구 경인로 610 (신도림동 413-9)"),
         NaverMapWidget(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          Text("네이버 지도"),
+          Text("카카오 내비"),
+          Text("티맵")
+        ],)
       ],
     );
   }
@@ -213,7 +225,23 @@ class NoticeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Column(
+      children: [
+        Text("INFORMATION"),
+        Text("예식정보 및 안내사항"),
+        SizedBox(height: 30),
+        Container(
+          width: 500,
+          child: TabbedCard(
+          elevation: 0,
+              tabs: [
+                TabbedCardItem(label: "셔틀 버스", child: const Placeholder()),
+            TabbedCardItem(label: "식사안내", child: const Placeholder()),
+            TabbedCardItem(label: "주차안내", child: const Placeholder())
+          ]),
+        ),
+      ],
+    );
   }
 }
 
@@ -272,9 +300,9 @@ class CongratulationGift extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontSize: 20)),
             SizedBox(height: 50),
-            _buildButton(context, '신랑 최문식', '카카오뱅크 3333-04-6486265'),
+            _buildButton(context, '신랑 최문식', '카카오뱅크 3333-04-1111111'),
             SizedBox(height: 20),
-            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-08-2397114'),
+            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-08-1111111'),
           ],
         ));
   }

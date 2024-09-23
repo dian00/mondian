@@ -29,7 +29,7 @@ class CalendarWidget extends StatelessWidget {
         ),
         // 초단위로 업데이트하는 블록으로 따로 뺄지 고민 중
         Text(
-          "D $day :  H $hour : M $min"
+          "D $day "// + " :  H $hour : M $min"
         )
       ],
     );
