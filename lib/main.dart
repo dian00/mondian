@@ -201,11 +201,30 @@ class MapWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-          Text("네이버 지도"),
+          getMapSchemeButton(),
           Text("카카오 내비"),
           Text("티맵")
         ],)
       ],
+    );
+  }
+
+  Widget getMapSchemeButton() {
+
+    return InkWell(
+      onTap: () {
+        if(defaultTargetPlatform == TargetPlatform.android) {
+
+        } else if(defaultTargetPlatform == TargetPlatform.iOS){
+
+        }
+      },
+      child: Row(
+        children: [
+          Icon(Icons.map),
+          Text("네이버지도")
+        ],
+      ),
     );
   }
 }
