@@ -1,16 +1,17 @@
-import 'dart:io';
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
 import 'package:mondian/naver_map.dart';
+import 'package:mondian/utils/url_constant.dart';
 import 'dart:html' as html;
 
 import 'package:mondian/widget/tabbed_card.dart';
 import 'package:mondian/widget/tabbed_card_model.dart';
+import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -83,31 +84,44 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const WelcomeWidget(),
-            CalendarWidget(dDay: DateTime.utc(2025, 2, 8)),
-            const SizedBox(height: 20),
-            const CongratulationGift(),
-            const MapWidget(),
-            const SizedBox(height: 30,),
-            NoticeWidget(),
-          ],
+      body: Center(
+        child: AspectRatio(
+          aspectRatio: 9 / 16,
+          child: LayoutBuilder(
+            builder: (context, constraint) {
+              return SizedBox(
+                width: constraint.maxWidth,
+                height: constraint.maxHeight,
+                child: SingleChildScrollView(
+                  child: Column(
+                    // Column is also a layout widget. It takes a list of children and
+                    // arranges them vertically. By default, it sizes itself to fit its
+                    // children horizontally, and tries to be as tall as its parent.
+                    //
+                    // Column has various properties to control how it sizes itself and
+                    // how it positions its children. Here we use mainAxisAlignment to
+                    // center the children vertically; the main axis here is the vertical
+                    // axis because Columns are vertical (the cross axis would be
+                    // horizontal).
+                    //
+                    // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+                    // action in the IDE, or press "p" in the console), to see the
+                    // wireframe for each widget.
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const WelcomeWidget(),
+                      CalendarWidget(dDay: DateTime.utc(2025, 2, 8)),
+                      const SizedBox(height: 20),
+                      const CongratulationGift(),
+                      const MapWidget(),
+                      const SizedBox(height: 30,),
+                      NoticeWidget(),
+                    ],
+                  ),
+                ),
+              );
+            }
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -187,6 +201,7 @@ class GalleryWidget extends StatelessWidget {
   }
 }
 
+enum Maps { naver, kakao, tmap }
 class MapWidget extends StatelessWidget {
   const MapWidget({super.key});
 
@@ -195,34 +210,58 @@ class MapWidget extends StatelessWidget {
     return Column(
       children: [
         Text("오시는 길"),
-        Text("더링크호텔 서울 3F 플라자홀"),
+        Text("더링크호텔 서울 플라자홀 (4F)"),
         Text("서울 구로구 경인로 610 (신도림동 413-9)"),
         NaverMapWidget(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-          getMapSchemeButton(),
-          Text("카카오 내비"),
-          Text("티맵")
-        ],)
+          children: Maps.values.map( (e) => getMapSchemeButton(e)).toList())
       ],
     );
   }
 
-  Widget getMapSchemeButton() {
+  Future<void> launchPlatformSchemeUrl({
+    // required String androidUrl,
+    // required String iOSUrl,
+    required String webUrl,
+  }) async {
+    String url = webUrl;
+    // defaultTargetPlatform == TargetPlatform.android
+    //     ? androidUrl
+    //     : defaultTargetPlatform == TargetPlatform.iOS
+    //     ? iOSUrl
+    //     : webUrl;
 
+    final parseUrl = Uri.parse(url);
+    if (await canLaunchUrl(parseUrl)) {
+      launchUrl(parseUrl);
+    } else {
+      html.window.open(webUrl, "callback");
+    }
+  }
+
+  Widget getMapSchemeButton(Maps map) {
     return InkWell(
-      onTap: () {
-        if(defaultTargetPlatform == TargetPlatform.android) {
-
-        } else if(defaultTargetPlatform == TargetPlatform.iOS){
-
+      onTap: () async {
+        if( map == Maps.naver ) {
+          launchPlatformSchemeUrl(
+            // androidUrl: UrlConstant.naverAndroidScheme,
+            // iOSUrl: UrlConstant.naveriOSScheme,
+              webUrl: UrlConstant.naverWebUrl);
+        } else if (map == Maps.kakao) {
+          launchPlatformSchemeUrl(
+            // androidUrl: UrlConstant.naverAndroidScheme,
+            // iOSUrl: UrlConstant.naveriOSScheme,
+              webUrl: UrlConstant.naverWebUrl);
+        } else if (map == Maps.tmap) {
+          launchPlatformSchemeUrl(webUrl: UrlConstant.tmapUrl);
         }
+
       },
       child: Row(
         children: [
           Icon(Icons.map),
-          Text("네이버지도")
+          Text(map == Maps.naver ? "네이버지도" : "카카오지도")
         ],
       ),
     );
@@ -321,7 +360,7 @@ class CongratulationGift extends StatelessWidget {
             SizedBox(height: 50),
             _buildButton(context, '신랑 최문식', '카카오뱅크 3333-04-1111111'),
             SizedBox(height: 20),
-            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-08-1111111'),
+            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-06-3506332'),
           ],
         ));
   }
