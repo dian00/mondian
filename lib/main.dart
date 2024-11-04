@@ -6,11 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
 import 'package:mondian/naver_map.dart';
 import 'package:mondian/utils/url_constant.dart';
+import 'package:mondian/widget/horizontal_image_slider.dart';
+import 'package:mondian/widget/instagram_widget.dart';
+import 'package:mondian/widget/mobile_screen_ratio_widget.dart';
+import 'package:mondian/widget/wedding_invitation.dart';
 import 'dart:html' as html;
 
-import 'package:mondian/widget/tabbed_card.dart';
-import 'package:mondian/widget/tabbed_card_model.dart';
-import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -84,50 +85,71 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
-        child: AspectRatio(
-          aspectRatio: 9 / 16,
-          child: LayoutBuilder(
-            builder: (context, constraint) {
-              return SizedBox(
-                width: constraint.maxWidth,
-                height: constraint.maxHeight,
-                child: SingleChildScrollView(
-                  child: Column(
-                    // Column is also a layout widget. It takes a list of children and
-                    // arranges them vertically. By default, it sizes itself to fit its
-                    // children horizontally, and tries to be as tall as its parent.
-                    //
-                    // Column has various properties to control how it sizes itself and
-                    // how it positions its children. Here we use mainAxisAlignment to
-                    // center the children vertically; the main axis here is the vertical
-                    // axis because Columns are vertical (the cross axis would be
-                    // horizontal).
-                    //
-                    // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-                    // action in the IDE, or press "p" in the console), to see the
-                    // wireframe for each widget.
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const WelcomeWidget(),
-                      CalendarWidget(dDay: DateTime.utc(2025, 2, 8)),
-                      const SizedBox(height: 20),
-                      const CongratulationGift(),
-                      const MapWidget(),
-                      const SizedBox(height: 30,),
-                      NoticeWidget(),
-                    ],
+        child: MobileScreenRatioWidget(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                InstagramWidget(
+                  username: "username",
+                  content: Container(
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    width: double.infinity,
+                    child: Image.asset(
+                      'assets/images/poster_photo.jpeg',
+                      fit: BoxFit.fitHeight,
+                      width: double.infinity,
+                    ),
                   ),
+                  descriptionText:'서로의 코드를 이해하고, \n인생의 코드를 함께 짜기 시작한 두 사람이 \n마침내 결혼이라는 큰 프로젝트를 시작하려 합니다.\n\n2025년 2월 8일, \n저희의 소중한 순간을 함께해 주신다면 \n더없이 행복하고 감사한 마음으로 기억하겠습니다.'
                 ),
-              );
-            }
+                SizedBox(height: 20),
+                InstagramWidget(
+                    username: "D-day",
+                    content: Container(
+                      color: Colors.pink[50],
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: double.infinity,
+                      child: Center(child: DateDifferenceCardWidget(targetDate: DateTime.utc(2025, 2, 8))),
+                    ),
+                    descriptionText:'우리의 소중한 날까지 ${DateTime.utc(2025, 2, 8).difference(DateTime.now()).inDays + 1}일 남았습니다 :)'
+                ),
+                SizedBox(height: 20),
+                // DateDifferenceCardWidget(targetDate: DateTime.utc(2025, 2, 8)),//dDay: DateTime.utc(2025, 2, 8)),
+                // InstagramCalendarWidget(),
+                const SizedBox(height: 20),
+                InstagramWidget(username: "gift", content: Container( color: Colors.pink[50], width: double.infinity, child: CongratulationGift()), descriptionText: '마음 전하실 곳 \n 따듯한 마음 감사드립니다.'),
+                // const CongratulationGift(),
+                SizedBox(height: 30),
+                InstagramWidget(username: "map", content: MapWidget(), descriptionText: '오시는 길 안내 \n 더링크 호텔 서울 플라자홀 (4F)\n 서울 구로구 경인로 610 (신도림동 413-9)'),
+                const SizedBox(height: 30,),
+                const SizedBox(height: 30,),
+                InstagramWidget(username: "information", content: HorizontalImageSlider(children: [
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                ],
+                ), descriptionText: "예식 정보 및 안내 사항"),
+                const SizedBox(height: 20),
+                InstagramWidget(username: "photo", content: HorizontalImageSlider(children: [
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                ],
+                ), descriptionText: "웨딩 사진")
+              ],
+            ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.local_activity_rounded),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -209,11 +231,10 @@ class MapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("오시는 길"),
-        Text("더링크호텔 서울 플라자홀 (4F)"),
-        Text("서울 구로구 경인로 610 (신도림동 413-9)"),
         NaverMapWidget(),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: Maps.values.map( (e) => getMapSchemeButton(e)).toList())
       ],
@@ -252,7 +273,7 @@ class MapWidget extends StatelessWidget {
           launchPlatformSchemeUrl(
             // androidUrl: UrlConstant.naverAndroidScheme,
             // iOSUrl: UrlConstant.naveriOSScheme,
-              webUrl: UrlConstant.naverWebUrl);
+              webUrl: UrlConstant.kakaoUrl);
         } else if (map == Maps.tmap) {
           launchPlatformSchemeUrl(webUrl: UrlConstant.tmapUrl);
         }
@@ -261,13 +282,12 @@ class MapWidget extends StatelessWidget {
       child: Row(
         children: [
           Icon(Icons.map),
-          Text(map == Maps.naver ? "네이버지도" : "카카오지도")
+          Text(map == Maps.naver ? "네이버지도" : map == Maps.kakao ? "카카오지도" : "T티맵")
         ],
       ),
     );
   }
 }
-
 
 class InvitationWidget extends StatelessWidget {
   const InvitationWidget({super.key});
@@ -275,31 +295,6 @@ class InvitationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
-  }
-}
-
-class NoticeWidget extends StatelessWidget {
-  const NoticeWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("INFORMATION"),
-        Text("예식정보 및 안내사항"),
-        SizedBox(height: 30),
-        Container(
-          width: 500,
-          child: TabbedCard(
-          elevation: 0,
-              tabs: [
-                TabbedCardItem(label: "셔틀 버스", child: const Placeholder()),
-            TabbedCardItem(label: "식사안내", child: const Placeholder()),
-            TabbedCardItem(label: "주차안내", child: const Placeholder())
-          ]),
-        ),
-      ],
-    );
   }
 }
 
@@ -323,7 +318,6 @@ class CongratulationGift extends StatelessWidget {
 
   Widget _buildButton(BuildContext context, String receiver, accountNumber) {
     return Container(
-      width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -331,7 +325,7 @@ class CongratulationGift extends StatelessWidget {
             receiver,
             style: TextStyle(fontSize: 15),
           ),
-          SizedBox(width: 20),
+          SizedBox(width: 5),
           TextButton(
               onPressed: () => onPressed(context, accountNumber),
               child: Text(
@@ -340,7 +334,6 @@ class CongratulationGift extends StatelessWidget {
               )),
           IconButton(icon: const Icon(Icons.copy), onPressed: () => onPressed(context, accountNumber)),
           IconButton(icon: const Icon(Icons.payment), onPressed: () => onPayPressed(context, receiver)),
-
         ],
       ),
     );
@@ -349,18 +342,21 @@ class CongratulationGift extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        color: Colors.pink[50],
         margin: EdgeInsetsDirectional.all(20.0),
         child: Column(
           children: [
-            Text('신랑 신부에게 마음 전하기',
+            Text('마음 전하실 곳',
                 style: TextStyle(
-                    // color: const Color.fromRGBO(41, 82, 56, 100),
+                    color: Colors.black54,
                     fontWeight: FontWeight.bold,
-                    fontSize: 20)),
-            SizedBox(height: 50),
-            _buildButton(context, '신랑 최문식', '카카오뱅크 3333-04-1111111'),
-            SizedBox(height: 20),
-            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-06-3506332'),
+                    fontSize: 12)),
+            SizedBox(height: 5),
+            Text('신랑 측'),
+            _buildButton(context, '신랑 OOO', '카카오뱅크 3333-00-000000'),
+            SizedBox(height: 10),
+            Text('신부 측'),
+            _buildButton(context, '신부 OOO', '카카오뱅크 3333-00-000000'), //3333-06-3506332
           ],
         ));
   }
