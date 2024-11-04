@@ -1,4 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:mondian/calendar_widget.dart';
+import 'package:mondian/naver_map.dart';
+import 'package:mondian/widget/mobile_screen_ratio_widget.dart';
 
 void main() {
   runApp(WeddingInvitationApp());
@@ -8,7 +12,18 @@ class WeddingInvitationApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: WeddingInvitationScreen(),
+      theme: ThemeData(
+        useMaterial3: false,
+      ),
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.unknown
+        },
+      ),
+      home: MobileScreenRatioWidget(child: WeddingInvitationScreen()),
     );
   }
 }
@@ -31,7 +46,7 @@ class _WeddingInvitationScreenState extends State<WeddingInvitationScreen> {
           // 1. Initial Full-Screen Image
           SliverAppBar(
             //screen size height
-            expandedHeight: 500,
+            expandedHeight: 800,
             flexibleSpace: FlexibleSpaceBar(
               background: Image.asset(
                 'images/poster_photo.jpeg', // 이미지 경로
@@ -48,16 +63,13 @@ class _WeddingInvitationScreenState extends State<WeddingInvitationScreen> {
               child: Text(
                 '저희의 소중한 순간을 함께해 주신다면 더없이 행복하고 감사한 마음으로 기억하겠습니다.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
               ),
             ),
           ),
           // 3. Map Section
           SliverToBoxAdapter(
-            child: Container(
-              height: 300, // 지도 높이
-              child: Placeholder(), // 실제 지도 위젯으로 교체 가능
-            ),
+            child: NaverMapWidget(),
           ),
           // 4. Map App Links
           SliverToBoxAdapter(
@@ -66,7 +78,7 @@ class _WeddingInvitationScreenState extends State<WeddingInvitationScreen> {
               children: [
                 _buildMapButton('네이버 지도'),
                 _buildMapButton('카카오 지도'),
-                _buildMapButton('구글 지도'),
+                _buildMapButton('티맵'),
               ],
             ),
           ),
@@ -95,6 +107,12 @@ class _WeddingInvitationScreenState extends State<WeddingInvitationScreen> {
                   });
                 }),
               ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: InstagramCalendarWidget(),
             ),
           ),
         ],

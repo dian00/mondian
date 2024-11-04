@@ -35,5 +35,10 @@
         // }
     });
 
+    element.addEventListener('wheel', (event) => {
+        if (!element.contains(event.target)) {
+            event.preventDefault(); // 외부에서 시작된 스크롤 무시
+        }
+    });
     // infowindow.open(map, marker);
 </script>
