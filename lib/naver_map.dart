@@ -19,7 +19,7 @@ class _NaverMapWidgetState extends State<NaverMapWidget> {
           (int viewId) => IFrameElement()
         ..style.width = '100%'
         ..style.height = '100%'
-        ..src = '/mondian/assets/assets/html/map.html'
+        ..src = '/map.html'
         ..style.border = 'none',
     );
 
