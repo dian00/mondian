@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
+        title: '문식\u2665은애 우리 결혼해요',
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
           PointerDeviceKind.mouse,
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         useMaterial3: false,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: '문식\u2665은애 우리 결혼해요'),
     );
   }
 }
