@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: List.generate(
                       20,
                           (index) => Image.asset(
-                        'assets/images/img${index + 1}.jpg',
+                        'assets/images/IMG${index + 1}.webp',
                         fit: BoxFit.cover,
                       ),
                     ),

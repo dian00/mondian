@@ -49,7 +49,7 @@ class _AutoSwipeImageSliderState extends State<AutoSwipeImageSlider> {
         itemCount: 19, // img1부터 img20까지 총 20개의 이미지
         itemBuilder: (context, index) {
           return Image.asset(
-            'assets/images/img${19 - index}.jpg',
+            'assets/images/IMG${19 - index}.webp',
             fit: BoxFit.cover,
             width: double.infinity,
           );

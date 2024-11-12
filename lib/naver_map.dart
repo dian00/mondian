@@ -10,28 +10,49 @@ class NaverMapWidget extends StatefulWidget {
 }
 
 class _NaverMapWidgetState extends State<NaverMapWidget> {
+  bool _iframeActive = false;
 
   @override
   void initState() {
+    super.initState();
+
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
       'naver-map',
-          (int viewId) => IFrameElement()
-        ..style.width = '100%'
-        ..style.height = '100%'
-        ..src = '/map.html'
-        ..style.border = 'none',
-    );
+      (int viewId) {
+        final iframe = IFrameElement()
+          ..style.width = '100%'
+          ..style.height = '100%'
+          ..src = '/map.html'
+          ..style.border = 'none'
+          ..style.pointerEvents = 'none'; // 초기에는 이벤트 비활성화
 
-    super.initState();
+        iframe.onClick.listen((event) {
+          setState(() {
+            _iframeActive = !_iframeActive;
+          });
+          // 이벤트를 다시 활성화 또는 비활성화
+          iframe.style.pointerEvents = _iframeActive ? 'auto' : 'none';
+        });
+
+        return iframe;
+      },
+    );
   }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _iframeActive = !_iframeActive;
+        });
+      },
+      child: SizedBox(
         height: 400,
         width: double.infinity,
-        // 등록된 IFrameElement Widget들 중
-        //'naver-map'라는 이름을 가진 개체를 Widget으로 임베딩
-        child: const HtmlElementView(viewType: 'naver-map'));
+        child: HtmlElementView(viewType: 'naver-map'),
+      ),
+    );
   }
 }

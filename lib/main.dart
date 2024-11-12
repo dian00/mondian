@@ -45,7 +45,7 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           // 배경 이미지
           Image.asset(
-            'assets/images/img6.jpg',
+            'assets/images/IMG6.webp',
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
