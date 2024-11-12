@@ -348,10 +348,10 @@ class CongratulationGift extends StatelessWidget {
                     fontSize: 12)),
             SizedBox(height: 5),
             Text('신랑 측'),
-            _buildButton(context, '신랑 OOO', '카카오뱅크 3333-00-000000'),
+            _buildButton(context, '신랑 최문식', '카카오뱅크 3333-01-0931666'),
             SizedBox(height: 10),
             Text('신부 측'),
-            _buildButton(context, '신부 OOO', '카카오뱅크 3333-00-000000'), //3333-06-3506332
+            _buildButton(context, '신부 홍은애', '카카오뱅크 3333-25-0188258'),
           ],
         ));
   }
