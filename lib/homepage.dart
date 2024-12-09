@@ -4,8 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
+import 'package:mondian/firestore_provider.dart';
 import 'package:mondian/naver_map.dart';
 import 'package:mondian/utils/url_constant.dart';
+import 'package:mondian/widget/custom_widget.dart';
+import 'package:mondian/widget/gestbook_screen.dart';
+import 'package:mondian/widget/gestbook_widget.dart';
 import 'package:mondian/widget/horizontal_image_slider.dart';
 import 'package:mondian/widget/instagram_widget.dart';
 import 'package:mondian/widget/mobile_screen_ratio_widget.dart';
@@ -74,6 +78,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showTooltip = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_handleScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_handleScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _handleScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    // 스크롤이 80% 이상인 경우
+    if (currentScroll > maxScroll * 0.8 && !_showTooltip) {
+      print("Show Tooltip");
+      setState(() {
+        _showTooltip = true;
+      });
+    } else if (currentScroll <= maxScroll * 0.8 && _showTooltip) {
+      print("hide Tooltip");
+      setState(() {
+        _showTooltip = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -87,6 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: MobileScreenRatioWidget(
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -128,24 +167,61 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   descriptionText: "웨딩 사진 모음",
-                )
-                // InstagramWidget(username: "photo", content: HorizontalImageSlider(children: [
-                //   Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                //   Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                //   Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                //   Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                // ],
-                // ), descriptionText: "웨딩 사진")
+                ),
+                InstagramWidget(username: "photo", content: HorizontalImageSlider(children: [
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
+                ],
+                ), descriptionText: "웨딩 사진"),
+                GuestbookScreen(),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: const Icon(Icons.local_activity_rounded),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // 툴팁 영역
+          AnimatedOpacity(
+            opacity: _showTooltip ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 300),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              margin: EdgeInsets.only(bottom: 4),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                "따듯한 마음 남기기",
+                style: TextStyle(color: Colors.black, fontSize: 12),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                CustomWidget().showFloatingModal(context, Column(
+                  children: [
+                    InkWell(onTap: () {}, child: Text("방명록 작성하기")),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                      child: Divider(),
+                    ),
+                    InkWell(onTap: () {}, child: Text("참석의사 전달하기")),
+                  ],
+                ));
+              },
+              child: Icon(Icons.schedule_send),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
