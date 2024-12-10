@@ -2,13 +2,23 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 import 'package:mondian/firebase_options.dart';
 import 'package:mondian/homepage.dart';
 
 void main() {
+  init();
+  runApp(MyApp());
+}
+
+init() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+
+  KakaoSdk.init(
+    javaScriptAppKey: "c2c16faa2aca8084a77f9fa1abc6fde4"
+  );
+
 }
 
 class MyApp extends StatelessWidget {

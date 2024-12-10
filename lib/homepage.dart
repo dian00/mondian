@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
 import 'package:mondian/naver_map.dart';
+import 'package:mondian/provider/kakao_share.dart';
 import 'package:mondian/utils/url_constant.dart';
 import 'package:mondian/widget/custom_widget.dart';
 import 'package:mondian/widget/gestbook_screen.dart';
@@ -175,6 +176,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
                 ), descriptionText: "웨딩 사진"),
                 GuestbookScreen(),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        await KakaoShare.shareInvitation();
+                      },
+                      child: Text(
+                        "카카오톡으로 공유하기",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
