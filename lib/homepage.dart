@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
-import 'package:mondian/firestore_provider.dart';
 import 'package:mondian/naver_map.dart';
 import 'package:mondian/utils/url_constant.dart';
 import 'package:mondian/widget/custom_widget.dart';

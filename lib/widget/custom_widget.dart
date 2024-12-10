@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mondian/firestore_provider.dart';
+import 'package:mondian/provider/firestore_provider.dart';
 import 'package:mondian/model/attendance_model.dart';
 
 class CustomWidget {
