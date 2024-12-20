@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mondian/calendar_widget.dart';
@@ -13,21 +12,20 @@ import 'package:mondian/widget/gestbook_widget.dart';
 import 'package:mondian/widget/horizontal_image_slider.dart';
 import 'package:mondian/widget/instagram_widget.dart';
 import 'package:mondian/widget/mobile_screen_ratio_widget.dart';
-import 'package:mondian/widget/wedding_invitation.dart';
 import 'dart:html' as html;
 
 import 'package:mondian/utils/auto_swipe_image_slider.dart';
+import 'package:mondian/widget/story_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Homepage extends StatelessWidget {
-
   const Homepage({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: '문식\u2665은애 우리 결혼해요',
+      title: '문식\u2665은애 우리 결혼해요',
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         dragDevices: {
           PointerDeviceKind.mouse,
@@ -100,12 +98,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // 스크롤이 80% 이상인 경우
     if (currentScroll > maxScroll * 0.8 && !_showTooltip) {
-      print("Show Tooltip");
       setState(() {
         _showTooltip = true;
       });
     } else if (currentScroll <= maxScroll * 0.8 && _showTooltip) {
-      print("hide Tooltip");
       setState(() {
         _showTooltip = false;
       });
@@ -124,122 +120,174 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
       body: Center(
         child: MobileScreenRatioWidget(
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                InstagramWidget(
-                  username: "문식\u2665은애",
-                  content: AutoSwipeImageSlider(),
-                  descriptionText:'서로의 코드를 이해하고, \n인생의 코드를 함께 짜기 시작한 두 사람이 \n마침내 결혼이라는 큰 프로젝트를 시작하려 합니다.\n\n2025년 2월 8일, \n저희의 소중한 순간을 함께해 주신다면 \n더없이 행복하고 감사한 마음으로 기억하겠습니다.'
-                ),
-                SizedBox(height: 20),
-                InstagramWidget(
-                    username: "D-day",
-                    content: Container(
-                      color: Colors.pink[50],
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      width: double.infinity,
-                      child: Center(child: DateDifferenceCardWidget(targetDate: DateTime.utc(2025, 2, 8))),
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: IconButton(
+                              icon: Icon(Icons.favorite, color: Colors.black),
+                              onPressed: () {},
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.send_rounded, color: Colors.black),
+                          onPressed: () async {
+                            await KakaoShare.shareInvitation();
+                          },
+                        ),
+                      ],
                     ),
-                    descriptionText:'우리의 소중한 날까지 ${DateTime.utc(2025, 2, 8).difference(DateTime.now()).inDays + 1}일 남았습니다 :)'
-                ),
-                SizedBox(height: 20),
-                // DateDifferenceCardWidget(targetDate: DateTime.utc(2025, 2, 8)),//dDay: DateTime.utc(2025, 2, 8)),
-                // InstagramCalendarWidget(),
-                const SizedBox(height: 20),
-                InstagramWidget(username: "gift", content: Container( color: Colors.pink[50], width: double.infinity, child: CongratulationGift()), descriptionText: '마음 전하실 곳 \n 따듯한 마음 감사드립니다.'),
-                // const CongratulationGift(),
-                SizedBox(height: 30),
-                InstagramWidget(username: "map", content: MapWidget(), descriptionText: '오시는 길 안내 \n 더링크 호텔 서울 플라자홀 (4F)\n 서울 구로구 경인로 610 (신도림동 413-9)'),
-                const SizedBox(height: 30,),
-                const SizedBox(height: 30,),
-                InstagramWidget(
-                  username: "photo",
-                  content: HorizontalImageSlider(
-                    children: List.generate(
-                      20,
-                          (index) => Image.asset(
-                        'assets/images/IMG${index + 1}.webp',
-                        fit: BoxFit.cover,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          StoriesSection(),
+                          InstagramWidget(
+                              username: "문식\u2665은애",
+                              content: AutoSwipeImageSlider(),
+                              descriptionText:
+                                  '서로의 코드를 이해하고, \n인생의 코드를 함께 짜기 시작한 두 사람이 \n마침내 결혼이라는 큰 프로젝트를 시작하려 합니다.\n\n2025년 2월 8일, \n저희의 소중한 순간을 함께해 주신다면 \n더없이 행복하고 감사한 마음으로 기억하겠습니다.'),
+                          SizedBox(height: 20),
+                          InstagramWidget(
+                              username: "D-day",
+                              content: Container(
+                                color: Colors.pink[50],
+                                height: MediaQuery.of(context).size.height * 0.5,
+                                width: double.infinity,
+                                child: Center(
+                                    child: DateDifferenceCardWidget(
+                                        targetDate: DateTime.utc(2025, 2, 8))),
+                              ),
+                              descriptionText:
+                                  '우리의 소중한 날까지 ${DateTime.utc(2025, 2, 8).difference(DateTime.now()).inDays + 1}일 남았습니다 :)'),
+                          SizedBox(height: 20),
+                          // DateDifferenceCardWidget(targetDate: DateTime.utc(2025, 2, 8)),//dDay: DateTime.utc(2025, 2, 8)),
+                          // InstagramCalendarWidget(),
+                          const SizedBox(height: 20),
+                          InstagramWidget(
+                              username: "gift",
+                              content: Container(
+                                  color: Colors.pink[50],
+                                  width: double.infinity,
+                                  child: CongratulationGift()),
+                              descriptionText: '마음 전하실 곳 \n 따듯한 마음 감사드립니다.'),
+                          // const CongratulationGift(),
+                          SizedBox(height: 30),
+                          InstagramWidget(
+                              username: "map",
+                              content: MapWidget(),
+                              descriptionText:
+                                  '오시는 길 안내 \n 더링크 호텔 서울 플라자홀 (4F)\n 서울 구로구 경인로 610 (신도림동 413-9)'),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          InstagramWidget(
+                            username: "photo",
+                            content: HorizontalImageSlider(
+                              children: List.generate(
+                                20,
+                                (index) => Image.asset(
+                                  'assets/images/IMG${index + 1}.webp',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            descriptionText: "웨딩 사진 모음",
+                          ),
+                          InstagramWidget(
+                              username: "photo",
+                              content: HorizontalImageSlider(
+                                children: [
+                                  Image.asset('assets/images/main_photo.jpeg',
+                                      fit: BoxFit.cover),
+                                  Image.asset('assets/images/main_photo.jpeg',
+                                      fit: BoxFit.cover),
+                                  Image.asset('assets/images/main_photo.jpeg',
+                                      fit: BoxFit.cover),
+                                  Image.asset('assets/images/main_photo.jpeg',
+                                      fit: BoxFit.cover),
+                                ],
+                              ),
+                              descriptionText: "웨딩 사진"),
+                          GuestbookScreen(),
+                        ],
                       ),
                     ),
                   ),
-                  descriptionText: "웨딩 사진 모음",
-                ),
-                InstagramWidget(username: "photo", content: HorizontalImageSlider(children: [
-                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
-                  Image.asset('assets/images/main_photo.jpeg', fit: BoxFit.cover),
                 ],
-                ), descriptionText: "웨딩 사진"),
-                GuestbookScreen(),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: GestureDetector(
-                      onTap: () async {
-                        await KakaoShare.shareInvitation();
-                      },
-                      child: Text(
-                        "카카오톡으로 공유하기",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      // 툴팁 영역
+                      AnimatedOpacity(
+                        opacity: _showTooltip ? 1.0 : 0.0,
+                        duration: Duration(milliseconds: 300),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          margin: EdgeInsets.only(bottom: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            "따듯한 마음 남기기",
+                            style: TextStyle(color: Colors.black, fontSize: 12),
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            CustomWidget().showFloatingModal(
+                                context,
+                                Container(
+                                  width: 600,
+                                  child: Column(
+                                    children: [
+                                      InkWell(onTap: () {}, child: Text("방명록 작성하기")),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 13.0),
+                                        child: Divider(),
+                                      ),
+                                      InkWell(onTap: () {}, child: Text("참석의사 전달하기")),
+                                    ],
+                                  ),
+                                ));
+                          },
+                          child: Icon(Icons.schedule_send),
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          // 툴팁 영역
-          AnimatedOpacity(
-            opacity: _showTooltip ? 1.0 : 0.0,
-            duration: Duration(milliseconds: 300),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              margin: EdgeInsets.only(bottom: 4),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                "따듯한 마음 남기기",
-                style: TextStyle(color: Colors.black, fontSize: 12),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                CustomWidget().showFloatingModal(context, Column(
-                  children: [
-                    InkWell(onTap: () {}, child: Text("방명록 작성하기")),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 13.0),
-                      child: Divider(),
-                    ),
-                    InkWell(onTap: () {}, child: Text("참석의사 전달하기")),
-                  ],
-                ));
-              },
-              child: Icon(Icons.schedule_send),
-            ),
-          ),
-        ],
       ),
     );
   }
 }
-
 
 class WelcomeWidget extends StatelessWidget {
   const WelcomeWidget({super.key});
@@ -261,7 +309,8 @@ class WelcomeWidget extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Text(
-              "MOON-SHIK", style: TextStyle(color: Colors.white),
+              "MOON-SHIK",
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ),
@@ -270,7 +319,8 @@ class WelcomeWidget extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.all(20),
             child: Text(
-              "EUN-AE", style: TextStyle(color: Colors.white),
+              "EUN-AE",
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ),
@@ -309,6 +359,7 @@ class GalleryWidget extends StatelessWidget {
 }
 
 enum Maps { naver, kakao, tmap }
+
 class MapWidget extends StatelessWidget {
   const MapWidget({super.key});
 
@@ -318,10 +369,10 @@ class MapWidget extends StatelessWidget {
       children: [
         NaverMapWidget(),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: Maps.values.map( (e) => getMapSchemeButton(e)).toList())
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: Maps.values.map((e) => getMapSchemeButton(e)).toList())
       ],
     );
   }
@@ -349,25 +400,28 @@ class MapWidget extends StatelessWidget {
   Widget getMapSchemeButton(Maps map) {
     return InkWell(
       onTap: () async {
-        if( map == Maps.naver ) {
+        if (map == Maps.naver) {
           launchPlatformSchemeUrl(
-            // androidUrl: UrlConstant.naverAndroidScheme,
-            // iOSUrl: UrlConstant.naveriOSScheme,
+              // androidUrl: UrlConstant.naverAndroidScheme,
+              // iOSUrl: UrlConstant.naveriOSScheme,
               webUrl: UrlConstant.naverWebUrl);
         } else if (map == Maps.kakao) {
           launchPlatformSchemeUrl(
-            // androidUrl: UrlConstant.naverAndroidScheme,
-            // iOSUrl: UrlConstant.naveriOSScheme,
+              // androidUrl: UrlConstant.naverAndroidScheme,
+              // iOSUrl: UrlConstant.naveriOSScheme,
               webUrl: UrlConstant.kakaoUrl);
         } else if (map == Maps.tmap) {
           launchPlatformSchemeUrl(webUrl: UrlConstant.tmapUrl);
         }
-
       },
       child: Row(
         children: [
           Icon(Icons.map),
-          Text(map == Maps.naver ? "네이버지도" : map == Maps.kakao ? "카카오지도" : "T티맵")
+          Text(map == Maps.naver
+              ? "네이버지도"
+              : map == Maps.kakao
+                  ? "카카오지도"
+                  : "T티맵")
         ],
       ),
     );
@@ -394,9 +448,8 @@ class CongratulationGift extends StatelessWidget {
 
   void onPayPressed(BuildContext context, String receiver) {
     // PC 여부 확인 할건지
-    if( receiver.contains('신랑') ) {
-
-    } else if( receiver.contains('신부') ) {
+    if (receiver.contains('신랑')) {
+    } else if (receiver.contains('신부')) {
       html.window.open('https://qr.kakaopay.com/Ej7uy8Oad', 'new tab');
     }
   }
@@ -417,8 +470,12 @@ class CongratulationGift extends StatelessWidget {
                 accountNumber,
                 maxLines: 2,
               )),
-          IconButton(icon: const Icon(Icons.copy), onPressed: () => onPressed(context, accountNumber)),
-          IconButton(icon: const Icon(Icons.payment), onPressed: () => onPayPressed(context, receiver)),
+          IconButton(
+              icon: const Icon(Icons.copy),
+              onPressed: () => onPressed(context, accountNumber)),
+          IconButton(
+              icon: const Icon(Icons.payment),
+              onPressed: () => onPayPressed(context, receiver)),
         ],
       ),
     );
@@ -446,5 +503,3 @@ class CongratulationGift extends StatelessWidget {
         ));
   }
 }
-
-

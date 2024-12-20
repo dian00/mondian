@@ -8,25 +8,30 @@ class CustomWidget {
       backgroundColor: Colors.transparent,	//	모달 뒤의 색
       context: context,
       builder: (context) {
-        return Container(
-          // width: 330,
-          // height: 165,
-          margin: const EdgeInsets.only(bottom: 50, left: 30, right: 30),	//	모달 밑의 띄어짐 정도
-          clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _modalBar(context),	//	모달 상단의 바
-                child
-              ],
+        return Wrap(
+          children: [
+            Center(
+              child: Container(
+                width: 500,
+                margin: const EdgeInsets.only(bottom: 50, left: 30, right: 30),	//	모달 밑의 띄어짐 정도
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _modalBar(context),	//	모달 상단의 바
+                      child
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         );
       },
     );
